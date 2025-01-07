@@ -13,7 +13,7 @@ func NewClientService(repo repository.Client) *ClientService {
 	return &ClientService{repo: repo}
 }
 
-func (c ClientService) Create(client types.Client) (int, error) {
+func (c ClientService) Create(client types.CreateClient) (int, error) {
 	return c.repo.Create(client)
 }
 
@@ -21,14 +21,14 @@ func (c ClientService) Delete(id int) error {
 	return c.repo.Delete(id)
 }
 
-func (c ClientService) Find(name string, surname string) ([]types.Client, error) {
+func (c ClientService) Find(name string, surname string) ([]types.ClientDTO, error) {
 	return c.repo.Find(name, surname)
 }
 
-func (c ClientService) GetAll(limit string, offset string) ([]types.ClientDTO, error) {
+func (c ClientService) GetAll(limit int, offset int) ([]types.ClientDTO, error) {
 	return c.repo.GetAll(limit, offset)
 }
 
-func (c ClientService) Update(id string, adress types.Adress) error {
+func (c ClientService) Update(id int, adress types.Adress) error {
 	return c.repo.Update(id, adress)
 }

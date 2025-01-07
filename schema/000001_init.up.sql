@@ -27,9 +27,9 @@ CREATE TABLE client
 CREATE TABLE supplier
 (
     supplier_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    adress_id INT NOT NULL,
-    phone_number VARCHAR(15),
+    supplier_name VARCHAR(50) NOT NULL,
+    supplier_adress_id INT NOT NULL,
+    supplier_phone_number VARCHAR(15),
     FOREIGN KEY (adress_id) REFERENCES adress (adress_id) ON DELETE RESTRICT
 );
 

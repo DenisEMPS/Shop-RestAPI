@@ -21,3 +21,13 @@ type ClientDTO struct {
 	RegistrationDate string `json:"registration_date" binding:"required" db:"registration_date"`
 	AdressID         int    `json:"adress_id" db:"adress_id"`
 }
+
+type CreateClient struct {
+	Name     string `json:"name" binding:"required"`
+	Surname  string `json:"surname" binding:"required"`
+	Birthday string `json:"birthday" binding:"required"`
+	Gender   bool   `json:"gender" binding:"required"`
+	Country  string `json:"country" binding:"required"`
+	City     string `json:"city" binding:"required"`
+	Street   string `json:"street" binding:"required"`
+}

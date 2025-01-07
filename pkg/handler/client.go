@@ -9,7 +9,8 @@ import (
 )
 
 func (h *Handler) createClient(c *gin.Context) {
-	var client types.Client
+	var client types.CreateClient
+
 	if err := c.BindJSON(&client); err != nil {
 		NewErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -29,7 +30,7 @@ func (h *Handler) createClient(c *gin.Context) {
 func (h *Handler) deleteClient(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")
 		return
 	}
 
@@ -61,8 +62,18 @@ func (h *Handler) findClientByName(c *gin.Context) {
 }
 
 func (h *Handler) getAllClients(c *gin.Context) {
-	limit := c.Query("limit")
-	offset := c.Query("offset")
+
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if err != nil {
+		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")
+		return
+	}
+
+	offset, err := strconv.Atoi(c.Query("offset"))
+	if err != nil {
+		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")
+		return
+	}
 
 	output, err := h.services.Client.GetAll(limit, offset)
 	if err != nil {
@@ -75,14 +86,18 @@ func (h *Handler) getAllClients(c *gin.Context) {
 func (h *Handler) updateClientEmail(c *gin.Context) {
 	var adress types.Adress
 
-	id := c.Param("id")
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	if err := c.BindJSON(&adress); err != nil {
 		NewErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	err := h.services.Client.Update(id, adress)
+	err = h.services.Client.Update(id, adress)
 	if err != nil {
 		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

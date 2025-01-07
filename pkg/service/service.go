@@ -6,15 +6,19 @@ import (
 )
 
 type Client interface {
-	Create(client types.Client) (int, error)
+	Create(client types.CreateClient) (int, error)
 	Delete(id int) error
-	Find(name string, surname string) ([]types.Client, error)
-	GetAll(limit string, offset string) ([]types.ClientDTO, error)
-	Update(id string, adress types.Adress) error
+	Find(name string, surname string) ([]types.ClientDTO, error)
+	GetAll(limit int, offset int) ([]types.ClientDTO, error)
+	Update(id int, adress types.Adress) error
 }
 
 type Product interface {
-	Create(product types.ProductDAO) (int, error)
+	Create(product types.Product) (int, error)
+	GetByID(id int) (types.ProductDAO, error)
+	GetAll(offset int, limit int) ([]types.ProductDAO, error)
+	Delete(id int) error
+	Update(id int, productU types.ProductUpdate) error
 }
 
 type Supplier interface {

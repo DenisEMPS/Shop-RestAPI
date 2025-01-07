@@ -17,7 +17,7 @@ func NewClientPostgres(db *sqlx.DB) *ClientPostgres {
 	return &ClientPostgres{db: db}
 }
 
-func (c ClientPostgres) Create(client types.Client) (int, error) {
+func (c ClientPostgres) Create(client types.CreateClient) (int, error) {
 	var id int
 
 	tx, err := c.db.Begin()
@@ -33,8 +33,8 @@ func (c ClientPostgres) Create(client types.Client) (int, error) {
 	}
 
 	query = fmt.Sprintf(`INSERT INTO %s (name, surname, birthday, gender, registration_date, adress_id)
-    VALUES ($1, $2, $3, $4, $5, $6) RETURNING client_id`, clientTable)
-	raw = c.db.QueryRow(query, client.Name, client.Surname, client.Birthday, client.Gender, `NOW()`, id)
+    VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, $5) RETURNING client_id`, clientTable)
+	raw = c.db.QueryRow(query, client.Name, client.Surname, client.Birthday, client.Gender, id)
 	if err := raw.Scan(&id); err != nil {
 		tx.Rollback()
 		return 0, err
@@ -44,14 +44,15 @@ func (c ClientPostgres) Create(client types.Client) (int, error) {
 }
 
 func (c ClientPostgres) Delete(id int) error {
-	query := fmt.Sprintf("DELETE FROM %s cl USING %s ad WHERE cl.adress_id = ad.adress_id AND client_id=$1", clientTable, adressTable)
+	query := fmt.Sprintf("DELETE FROM %s WHERE client_id=$1", clientTable)
 	_, err := c.db.Exec(query, id)
 	return err
 }
 
-func (c ClientPostgres) Find(name string, surname string) ([]types.Client, error) {
-	var output []types.Client
-	query := fmt.Sprintf("SELECT * FROM %s WHERE name=$1 AND surname=$2", clientTable)
+func (c ClientPostgres) Find(name string, surname string) ([]types.ClientDTO, error) {
+	var output []types.ClientDTO
+
+	query := fmt.Sprintf("SELECT client_id, name, surname, birthday, gender, registration_date, adress_id FROM %s WHERE name=$1 AND surname=$2", clientTable)
 	err := c.db.Select(&output, query, name, surname)
 	if err != nil {
 		return nil, err
@@ -59,18 +60,10 @@ func (c ClientPostgres) Find(name string, surname string) ([]types.Client, error
 	return output, nil
 }
 
-func (c ClientPostgres) GetAll(limit string, offset string) ([]types.ClientDTO, error) {
+func (c ClientPostgres) GetAll(limit int, offset int) ([]types.ClientDTO, error) {
 	var output []types.ClientDTO
 
-	if limit == "" {
-		limit = "null"
-	}
-
-	if offset == "" {
-		offset = "0"
-	}
-
-	query := fmt.Sprintf("SELECT * FROM %s OFFSET $1 LIMIT $2", clientTable)
+	query := fmt.Sprintf("SELECT client_id, name, surname, birthday, gender, registration_date, adress_id FROM %s OFFSET $1 LIMIT $2", clientTable)
 	err := c.db.Select(&output, query, offset, limit)
 	if err != nil {
 		return nil, err
@@ -78,7 +71,7 @@ func (c ClientPostgres) GetAll(limit string, offset string) ([]types.ClientDTO, 
 	return output, nil
 }
 
-func (c ClientPostgres) Update(id string, adress types.Adress) error {
+func (c ClientPostgres) Update(id int, adress types.Adress) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argID := 1
