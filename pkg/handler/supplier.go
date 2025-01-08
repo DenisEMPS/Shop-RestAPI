@@ -43,8 +43,14 @@ func (h *Handler) updateSupplier(c *gin.Context) {
 	}
 
 	err = h.services.Supplier.Update(id, adress)
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
-	// Изменение адреса поставщика (параметры: Id и новый адрес в виде json в соответствии с выше описанным форматом)
+	c.JSON(http.StatusOK, StatusResponse{
+		Status: "ok",
+	})
 }
 
 func (h *Handler) deleteSupplierByID(c *gin.Context) {

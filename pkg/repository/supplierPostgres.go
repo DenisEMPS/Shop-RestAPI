@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"school21_project1/types"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -40,8 +41,34 @@ func (s SupplierPostgres) Create(supplier types.CreateSupplier) (int, error) {
 }
 
 func (s SupplierPostgres) Update(id int, adress types.Adress) error {
-	query := fmt.Sprintf("UPDATE %s ad USING %s sp SET ad.country = $1, ad.city = $2, ad.street = $3 WHERE ad.adress_id = sp.adress_id AND sp.supplier_id = $4", adressTable, supplierTable)
-	_, err := s.db.Exec(query, adress.Country, adress.City, adress.Street, id)
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argID := 1
+
+	if adress.Country != nil {
+		setValues = append(setValues, fmt.Sprintf("country=$%d", argID))
+		args = append(args, *adress.Country)
+		argID++
+	}
+
+	if adress.City != nil {
+		setValues = append(setValues, fmt.Sprintf("city=$%d", argID))
+		args = append(args, *adress.City)
+		argID++
+	}
+
+	if adress.Street != nil {
+		setValues = append(setValues, fmt.Sprintf("street=$%d", argID))
+		args = append(args, *adress.Street)
+		argID++
+	}
+
+	values := strings.Join(setValues, ",")
+
+	query := fmt.Sprintf("UPDATE %s ad SET %s FROM %s sp WHERE ad.adress_id = sp.adress_id AND sp.supplier_id = $%d", adressTable, values, supplierTable, argID)
+
+	args = append(args, id)
+	_, err := s.db.Exec(query, args...)
 
 	return err
 }
