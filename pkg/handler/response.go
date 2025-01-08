@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"school21_project1/types"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -16,4 +18,8 @@ func NewErrorResponse(c *gin.Context, statusCode int, message string) {
 
 type StatusResponse struct {
 	Status string `json:"status"`
+}
+
+type DataResponse struct {
+	Data []types.SupplierDTO `json:"data"`
 }

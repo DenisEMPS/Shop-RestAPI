@@ -22,6 +22,11 @@ type Product interface {
 }
 
 type Supplier interface {
+	Create(supplier types.CreateSupplier) (int, error)
+	Update(id int, adress types.Adress) error
+	Delete(id int) error
+	GetAll() ([]types.SupplierDTO, error)
+	GetByID(id int) (types.SupplierDTO, error)
 }
 
 type Image interface {
@@ -36,7 +41,8 @@ type Service struct {
 
 func NewService(repos *repository.Repositry) *Service {
 	return &Service{
-		Client:  NewClientService(repos.Client),
-		Product: NewProductService(repos.Product),
+		Client:   NewClientService(repos.Client),
+		Product:  NewProductService(repos.Product),
+		Supplier: NewSupplierService(repos.Supplier),
 	}
 }
