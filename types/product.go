@@ -7,7 +7,7 @@ type Product struct {
 	AvailableStock int     `json:"available_stock"`
 	LastUpdateDate string  `json:"last_update_date"`
 	SupplierID     string  `json:"supplier_id"`
-	ImageID        string  `json:"image_id"`
+	Image          []byte  `json:"image,omitempty"`
 }
 
 type ProductDAO struct {

@@ -31,6 +31,11 @@ type Supplier interface {
 }
 
 type Image interface {
+	Create(image types.CreateImageProduct) (string, error)
+	GetByID(id string) (types.Image, error)
+	Update(uuid string, image types.Image) error
+	Delete(uuid string) error
+	GetByProductID(id int) (types.Image, error)
 }
 
 type Repositry struct {
@@ -45,5 +50,6 @@ func NewRepository(db *sqlx.DB) *Repositry {
 		Client:   NewClientPostgres(db),
 		Product:  NewProductPostgres(db),
 		Supplier: NewSupplierPostgres(db),
+		Image:    NewImagePostgres(db),
 	}
 }

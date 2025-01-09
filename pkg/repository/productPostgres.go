@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"school21_project1/types"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -16,18 +17,34 @@ func NewProductPostgres(db *sqlx.DB) *ProductPostgres {
 }
 
 func (p ProductPostgres) Create(product types.Product) (int, error) {
+	var uid uuid.NullUUID
 	var id int
 
-	query := fmt.Sprintf(`INSERT INTO %s (name, category, price, available_stock, last_update_date, supplier_id, image_id) VALUES
-	($1, $2, $3, $4, $5, $6, $7) RETURNING product_id`, productTable)
-	raw := p.db.QueryRow(query, product.Name, product.Category, product.Price, product.AvailableStock, product.LastUpdateDate, product.SupplierID, product.ImageID)
-
-	err := raw.Scan(&id)
+	tx, err := p.db.Begin()
 	if err != nil {
 		return 0, err
 	}
 
-	return id, nil
+	if len(product.Image) != 0 {
+		uid.UUID = uuid.New()
+		uid.Valid = true
+		query := fmt.Sprintf("INSERT INTO %s (image_id, image) VALUES ($1, $2)", imageTable)
+		_, err := p.db.Exec(query, uid.UUID, product.Image)
+		if err != nil {
+			tx.Rollback()
+			return 0, err
+		}
+	}
+
+	query := fmt.Sprintf(`INSERT INTO %s (name,category,price,available_stock, last_update_date, supplier_id, image_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING product_id`, productTable)
+	raw := p.db.QueryRow(query, product.Name, product.Category, product.Price, product.AvailableStock, product.LastUpdateDate, product.SupplierID, uid)
+	err = raw.Scan(&id)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	return id, tx.Commit()
 }
 
 func (p ProductPostgres) GetByID(id int) (types.ProductDAO, error) {
