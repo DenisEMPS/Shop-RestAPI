@@ -23,7 +23,7 @@ func (h *Handler) createSupplier(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusCreated, map[string]interface{}{
 		"id": id,
 	})
 }
@@ -31,14 +31,19 @@ func (h *Handler) createSupplier(c *gin.Context) {
 func (h *Handler) updateSupplier(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")
 		return
 	}
 
 	var adress types.Adress
 	err = c.BindJSON(&adress)
 	if err != nil {
-		NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")
+		return
+	}
+
+	if adress.Country == nil && adress.City == nil && adress.Street == nil { // validation Front-lvl
+		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")
 		return
 	}
 
@@ -61,7 +66,6 @@ func (h *Handler) deleteSupplierByID(c *gin.Context) {
 	}
 
 	err = h.services.Supplier.Delete(id)
-
 	if err != nil {
 		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -93,7 +97,7 @@ func (h *Handler) getSupplierByID(c *gin.Context) {
 
 	supplier, err := h.services.Supplier.GetByID(id)
 	if err != nil {
-		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		NewErrorResponse(c, http.StatusNotFound, err.Error())
 		return
 	}
 

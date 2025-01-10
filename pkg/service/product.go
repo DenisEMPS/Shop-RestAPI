@@ -17,11 +17,11 @@ func (p ProductService) Create(product types.Product) (int, error) {
 	return p.repo.Create(product)
 }
 
-func (p ProductService) GetByID(id int) (types.ProductDAO, error) {
+func (p ProductService) GetByID(id int) (types.ProductDAO, types.Image, error) {
 	return p.repo.GetByID(id)
 }
 
-func (p ProductService) GetAll(offset int, limit int) ([]types.ProductDAO, error) {
+func (p ProductService) GetAll(offset int, limit int) ([]types.ProductDAO, []types.Image, error) {
 	return p.repo.GetAll(offset, limit)
 }
 

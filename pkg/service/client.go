@@ -21,11 +21,11 @@ func (c ClientService) Delete(id int) error {
 	return c.repo.Delete(id)
 }
 
-func (c ClientService) Find(name string, surname string) ([]types.ClientDTO, error) {
+func (c ClientService) Find(name string, surname string) ([]types.ClientDAO, error) {
 	return c.repo.Find(name, surname)
 }
 
-func (c ClientService) GetAll(limit int, offset int) ([]types.ClientDTO, error) {
+func (c ClientService) GetAll(limit int, offset int) ([]types.ClientDAO, error) {
 	return c.repo.GetAll(limit, offset)
 }
 

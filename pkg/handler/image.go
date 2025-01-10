@@ -22,7 +22,7 @@ func (h *Handler) createImageProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusCreated, map[string]interface{}{
 		"uuid": uuid,
 	})
 }

@@ -49,10 +49,10 @@ func (c ClientPostgres) Delete(id int) error {
 	return err
 }
 
-func (c ClientPostgres) Find(name string, surname string) ([]types.ClientDTO, error) {
-	var output []types.ClientDTO
+func (c ClientPostgres) Find(name string, surname string) ([]types.ClientDAO, error) {
+	var output []types.ClientDAO
 
-	query := fmt.Sprintf("SELECT client_id, name, surname, birthday, gender, registration_date, adress_id FROM %s WHERE name=$1 AND surname=$2", clientTable)
+	query := fmt.Sprintf("SELECT name, surname, birthday, gender, registration_date, country, city, street FROM %s cl JOIN %s USING(adress_id) WHERE name=$1 AND surname=$2", clientTable, adressTable)
 	err := c.db.Select(&output, query, name, surname)
 	if err != nil {
 		return nil, err
@@ -60,10 +60,10 @@ func (c ClientPostgres) Find(name string, surname string) ([]types.ClientDTO, er
 	return output, nil
 }
 
-func (c ClientPostgres) GetAll(limit int, offset int) ([]types.ClientDTO, error) {
-	var output []types.ClientDTO
+func (c ClientPostgres) GetAll(limit int, offset int) ([]types.ClientDAO, error) {
+	var output []types.ClientDAO
 
-	query := fmt.Sprintf("SELECT client_id, name, surname, birthday, gender, registration_date, adress_id FROM %s OFFSET $1 LIMIT $2", clientTable)
+	query := fmt.Sprintf("SELECT name, surname, birthday, gender, registration_date, country, city, street FROM %s JOIN %s USING(adress_id) OFFSET $1 LIMIT $2", clientTable, adressTable)
 	err := c.db.Select(&output, query, offset, limit)
 	if err != nil {
 		return nil, err

@@ -22,7 +22,7 @@ func (h *Handler) createClient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusCreated, map[string]interface{}{
 		"id": id,
 	})
 }
@@ -54,7 +54,7 @@ func (h *Handler) findClientByName(c *gin.Context) {
 
 	output, err := h.services.Client.Find(name, surname)
 	if err != nil {
-		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		NewErrorResponse(c, http.StatusNotFound, err.Error())
 		return
 	}
 
@@ -77,7 +77,7 @@ func (h *Handler) getAllClients(c *gin.Context) {
 
 	output, err := h.services.Client.GetAll(limit, offset)
 	if err != nil {
-		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		NewErrorResponse(c, http.StatusNotFound, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, output)

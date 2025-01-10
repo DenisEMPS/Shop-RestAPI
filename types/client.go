@@ -1,13 +1,14 @@
 package types
 
-type ClientDTO struct {
-	Id               int    `json:"client_id" db:"client_id"`
-	Name             string `json:"name" binding:"required" db:"name"`
-	Surname          string `json:"surname" binding:"required" db:"surname"`
-	Birthday         string `json:"birthday" binding:"required" db:"birthday"`
-	Gender           bool   `json:"gender" binding:"required" db:"gender"`
-	RegistrationDate string `json:"registration_date" binding:"required" db:"registration_date"`
-	AdressID         int    `json:"adress_id" db:"adress_id"`
+type ClientDAO struct {
+	Name             string `json:"name" db:"name"`
+	Surname          string `json:"surname" db:"surname"`
+	Birthday         string `json:"birthday" db:"birthday"`
+	Gender           bool   `json:"gender" db:"gender"`
+	RegistrationDate string `json:"registration_date" db:"registration_date"`
+	Country          string `json:"country" db:"country"`
+	City             string `json:"city" db:"city"`
+	Street           string `json:"street" db:"street"`
 }
 
 type CreateClient struct {

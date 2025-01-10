@@ -20,21 +20,21 @@ func (s SupplierPostgres) Create(supplier types.CreateSupplier) (int, error) {
 	var id int
 	tx, err := s.db.Begin()
 	if err != nil {
-		return 0, nil
+		return 0, err
 	}
 
 	query := fmt.Sprintf("INSERT INTO %s (country, city, street) VALUES ($1, $2, $3) RETURNING adress_id", adressTable)
 	raw := s.db.QueryRow(query, supplier.Country, supplier.City, supplier.Street)
 	if err := raw.Scan(&id); err != nil {
 		tx.Rollback()
-		return 0, nil
+		return 0, err
 	}
 
 	query = fmt.Sprintf("INSERT INTO %s (supplier_name, adress_id, supplier_phone_number) VALUES ($1, $2, $3) RETURNING supplier_id", supplierTable)
 	raw = s.db.QueryRow(query, supplier.Name, id, supplier.PhoneNumber)
 	if err := raw.Scan(&id); err != nil {
 		tx.Rollback()
-		return 0, nil
+		return 0, err
 	}
 
 	return id, tx.Commit()

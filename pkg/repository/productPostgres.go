@@ -29,7 +29,7 @@ func (p ProductPostgres) Create(product types.Product) (int, error) {
 		uid.UUID = uuid.New()
 		uid.Valid = true
 		query := fmt.Sprintf("INSERT INTO %s (image_id, image) VALUES ($1, $2)", imageTable)
-		_, err := p.db.Exec(query, uid.UUID, product.Image)
+		_, err := p.db.Exec(query, uid, product.Image)
 		if err != nil {
 			tx.Rollback()
 			return 0, err
@@ -47,27 +47,50 @@ func (p ProductPostgres) Create(product types.Product) (int, error) {
 	return id, tx.Commit()
 }
 
-func (p ProductPostgres) GetByID(id int) (types.ProductDAO, error) {
-	var output types.ProductDAO
+func (p ProductPostgres) GetByID(id int) (types.ProductDAO, types.Image, error) {
+	var outputProduct types.ProductDAO
+	var outputImage types.Image
 
-	query := fmt.Sprintf(`SELECT p.name, p.category, p.price, p.available_stock, p.last_update_date, s.name, a.country, a.city, a.street, s.phone_number, p.image_id 
-	FROM %s p JOIN %s s USING(supplier_id) JOIN %s a USING(adress_id) WHERE p.product_id = $1`, productTable, supplierTable, adressTable)
-	err := p.db.Get(&output, query, id)
+	query := fmt.Sprintf(`SELECT p.name, p.category, p.price, p.available_stock, p.last_update_date, supplier_name, a.country, a.city, a.street, supplier_phone_number, i.image 
+	FROM %s p JOIN %s s USING(supplier_id) JOIN %s a USING(adress_id) JOIN %s i USING(image_id) WHERE p.product_id = $1`, productTable, supplierTable, adressTable, imageTable)
+	raw, err := p.db.Query(query, id)
+	if err != nil {
+		return outputProduct, outputImage, err
+	}
 
-	return output, err
-
-	// add image later
+	for raw.Next() {
+		err = raw.Scan(&outputProduct.Name, &outputProduct.Category, &outputProduct.Price, &outputProduct.AvailableStock, &outputProduct.LastUpdateDate, &outputProduct.SupplierName, &outputProduct.SupplierAdressCountry, &outputProduct.SupplierAdressCity, &outputProduct.SupplierAdressStreet, &outputProduct.SupplierPhoneNumber, &outputImage.Image)
+		if err != nil {
+			return outputProduct, outputImage, err
+		}
+	}
+	return outputProduct, outputImage, err
 }
 
-func (p ProductPostgres) GetAll(offset int, limit int) ([]types.ProductDAO, error) {
-	var output []types.ProductDAO
+func (p ProductPostgres) GetAll(offset int, limit int) ([]types.ProductDAO, []types.Image, error) {
+	var outputProducts []types.ProductDAO
+	var outputImages []types.Image
 
-	query := fmt.Sprintf(`SELECT p.name, p.category, p.price, p.available_stock, p.last_update_date, s.name, a.country, a.city, a.street, s.phone_number, p.image_id 
-	FROM %s p JOIN %s s USING(supplier_id) JOIN %s a USING(adress_id) OFFSET $1 LIMIT $2`, productTable, supplierTable, adressTable)
+	query := fmt.Sprintf(`SELECT p.name, p.category, p.price, p.available_stock, p.last_update_date, supplier_name, a.country, a.city, a.street, supplier_phone_number, image
+	FROM %s p JOIN %s s USING(supplier_id) JOIN %s a USING(adress_id) JOIN %s USING(image_id) OFFSET $1 LIMIT $2`, productTable, supplierTable, adressTable, imageTable)
 
-	err := p.db.Select(&output, query, offset, limit)
+	raws, err := p.db.Query(query, offset, limit)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	return output, err
+	for raws.Next() {
+		var outputP types.ProductDAO
+		var outputI types.Image
+		err := raws.Scan(&outputP.Name, &outputP.Category, &outputP.Price, &outputP.AvailableStock, &outputP.LastUpdateDate, &outputP.SupplierName, &outputP.SupplierAdressCountry, &outputP.SupplierAdressCity, &outputP.SupplierAdressStreet, &outputP.SupplierPhoneNumber, &outputI.Image)
+		if err != nil {
+			return nil, nil, err
+		}
+		outputProducts = append(outputProducts, outputP)
+		outputImages = append(outputImages, outputI)
+	}
+
+	return outputProducts, outputImages, nil
 }
 
 func (p ProductPostgres) Delete(id int) error {

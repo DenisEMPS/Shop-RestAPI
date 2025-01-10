@@ -8,15 +8,15 @@ import (
 type Client interface {
 	Create(client types.CreateClient) (int, error)
 	Delete(id int) error
-	Find(name string, surname string) ([]types.ClientDTO, error)
-	GetAll(limit int, offset int) ([]types.ClientDTO, error)
+	Find(name string, surname string) ([]types.ClientDAO, error)
+	GetAll(limit int, offset int) ([]types.ClientDAO, error)
 	Update(id int, adress types.Adress) error
 }
 
 type Product interface {
 	Create(product types.Product) (int, error)
-	GetByID(id int) (types.ProductDAO, error)
-	GetAll(offset int, limit int) ([]types.ProductDAO, error)
+	GetByID(id int) (types.ProductDAO, types.Image, error)
+	GetAll(offset int, limit int) ([]types.ProductDAO, []types.Image, error)
 	Delete(id int) error
 	Update(id int, productU types.ProductUpdate) error
 }

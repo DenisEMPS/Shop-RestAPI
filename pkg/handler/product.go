@@ -1,6 +1,10 @@
 package handler
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"mime/multipart"
 	"net/http"
 	"school21_project1/types"
 	"strconv"
@@ -22,7 +26,7 @@ func (h *Handler) createProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusCreated, map[string]interface{}{
 		"id": id,
 	})
 }
@@ -58,12 +62,48 @@ func (h *Handler) getProductByID(c *gin.Context) {
 		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")
 	}
 
-	output, err := h.services.Product.GetByID(id)
+	product, image, err := h.services.Product.GetByID(id)
 	if err != nil {
 		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
-	c.JSON(http.StatusOK, output)
+	var buffer bytes.Buffer
+	writer := multipart.NewWriter(&buffer)
+
+	productBytes, err := json.Marshal(product)
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	productPart, err := writer.CreateFormFile(fmt.Sprintf("data_product_%s", product.Name), fmt.Sprintf("data_product_%s.json", product.Name))
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	_, err = productPart.Write(productBytes)
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	imagePart, err := writer.CreateFormFile(fmt.Sprintf("image_product_%s", product.Name), fmt.Sprintf("image_product_%s.png", product.Name))
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	_, err = imagePart.Write(image.Image)
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	writer.Close()
+
+	c.Header("Content-type", writer.FormDataContentType())
+	c.Data(http.StatusOK, "multipart/mixed", buffer.Bytes())
 }
 
 func (h *Handler) getAllProducts(c *gin.Context) {
@@ -80,13 +120,55 @@ func (h *Handler) getAllProducts(c *gin.Context) {
 		return
 	}
 
-	output, err := h.services.Product.GetAll(offset, limit)
+	products, images, err := h.services.Product.GetAll(offset, limit)
 	if err != nil {
 		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, output)
+	var buffer bytes.Buffer
+	writer := multipart.NewWriter(&buffer)
+
+	for i, data := range products {
+		dataBytes, err := json.Marshal(data)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to marshal JSON"})
+			return
+		}
+
+		dataPart, err := writer.CreateFormFile(fmt.Sprintf("data_product_%d", i), fmt.Sprintf("data_product_%d.json", i))
+		if err != nil {
+			NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		_, err = dataPart.Write(dataBytes)
+		if err != nil {
+			NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		imagePart, err := writer.CreateFormFile(fmt.Sprintf("image_product_%d", i), fmt.Sprintf("image_product_%d.png", i))
+		if err != nil {
+			NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		_, err = imagePart.Write(images[i].Image)
+		if err != nil {
+			NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+	}
+
+	err = writer.Close()
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.Header("Content-type", writer.FormDataContentType())
+	c.Data(http.StatusOK, "multipart/mixed", buffer.Bytes())
 }
 
 func (h *Handler) deleteProductByID(c *gin.Context) {
