@@ -29,6 +29,6 @@ func (c ClientService) GetAll(limit int, offset int) ([]types.ClientDAO, error) 
 	return c.repo.GetAll(limit, offset)
 }
 
-func (c ClientService) Update(id int, adress types.Adress) error {
+func (c ClientService) Update(id int, adress types.AdressDTO) error {
 	return c.repo.Update(id, adress)
 }

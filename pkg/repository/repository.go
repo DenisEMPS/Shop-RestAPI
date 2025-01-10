@@ -11,7 +11,7 @@ type Client interface {
 	Delete(id int) error
 	Find(name string, surname string) ([]types.ClientDAO, error)
 	GetAll(limit int, offset int) ([]types.ClientDAO, error)
-	Update(id int, adress types.Adress) error
+	Update(id int, adress types.AdressDTO) error
 }
 
 type Product interface {
@@ -24,10 +24,10 @@ type Product interface {
 
 type Supplier interface {
 	Create(supplier types.CreateSupplier) (int, error)
-	Update(id int, adress types.Adress) error
+	Update(id int, adress types.AdressDTO) error
 	Delete(id int) error
-	GetAll() ([]types.SupplierDTO, error)
-	GetByID(id int) (types.SupplierDTO, error)
+	GetAll() ([]types.SupplierDAO, error)
+	GetByID(id int) (types.SupplierDAO, error)
 }
 
 type Image interface {

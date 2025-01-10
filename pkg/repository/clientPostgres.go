@@ -71,7 +71,7 @@ func (c ClientPostgres) GetAll(limit int, offset int) ([]types.ClientDAO, error)
 	return output, nil
 }
 
-func (c ClientPostgres) Update(id int, adress types.Adress) error {
+func (c ClientPostgres) Update(id int, adress types.AdressDTO) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argID := 1

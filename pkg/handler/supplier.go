@@ -35,7 +35,7 @@ func (h *Handler) updateSupplier(c *gin.Context) {
 		return
 	}
 
-	var adress types.Adress
+	var adress types.AdressDTO
 	err = c.BindJSON(&adress)
 	if err != nil {
 		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")

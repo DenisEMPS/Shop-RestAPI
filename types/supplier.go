@@ -8,10 +8,10 @@ type CreateSupplier struct {
 	PhoneNumber string `json:"phone_number" binding:"required"`
 }
 
-type SupplierDTO struct {
-	Name        string `json:"name" binding:"required" db:"supplier_name"`
-	Country     string `json:"country" binding:"required" db:"country"`
-	City        string `json:"city" binding:"required" db:"city"`
-	Street      string `json:"street" binding:"required" db:"street"`
-	PhoneNumber string `json:"phone_number" binding:"required" db:"supplier_phone_number"`
+type SupplierDAO struct {
+	Name        string `json:"name" db:"supplier_name"`
+	Country     string `json:"country" db:"country"`
+	City        string `json:"city" db:"city"`
+	Street      string `json:"street" db:"street"`
+	PhoneNumber string `json:"phone_number" db:"supplier_phone_number"`
 }

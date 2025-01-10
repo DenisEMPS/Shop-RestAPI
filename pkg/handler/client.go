@@ -84,7 +84,7 @@ func (h *Handler) getAllClients(c *gin.Context) {
 }
 
 func (h *Handler) updateClientEmail(c *gin.Context) {
-	var adress types.Adress
+	var adress types.AdressDTO
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

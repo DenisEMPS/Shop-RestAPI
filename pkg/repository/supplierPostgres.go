@@ -40,7 +40,7 @@ func (s SupplierPostgres) Create(supplier types.CreateSupplier) (int, error) {
 	return id, tx.Commit()
 }
 
-func (s SupplierPostgres) Update(id int, adress types.Adress) error {
+func (s SupplierPostgres) Update(id int, adress types.AdressDTO) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argID := 1
@@ -80,8 +80,8 @@ func (s SupplierPostgres) Delete(id int) error {
 	return err
 }
 
-func (s SupplierPostgres) GetAll() ([]types.SupplierDTO, error) {
-	var supplier []types.SupplierDTO
+func (s SupplierPostgres) GetAll() ([]types.SupplierDAO, error) {
+	var supplier []types.SupplierDAO
 
 	query := fmt.Sprintf("SELECT sp.supplier_name, ad.country, ad.city, ad.street, sp.supplier_phone_number FROM %s sp JOIN %s ad USING(adress_id)", supplierTable, adressTable)
 	err := s.db.Select(&supplier, query)
@@ -89,8 +89,8 @@ func (s SupplierPostgres) GetAll() ([]types.SupplierDTO, error) {
 	return supplier, err
 }
 
-func (s SupplierPostgres) GetByID(id int) (types.SupplierDTO, error) {
-	var supplier types.SupplierDTO
+func (s SupplierPostgres) GetByID(id int) (types.SupplierDAO, error) {
+	var supplier types.SupplierDAO
 
 	query := fmt.Sprintf("SELECT sp.supplier_name, ad.country, ad.city, ad.street, sp.supplier_phone_number FROM %s sp JOIN %s ad USING(adress_id) WHERE sp.supplier_id = $1", supplierTable, adressTable)
 

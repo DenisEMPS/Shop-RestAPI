@@ -21,5 +21,5 @@ type StatusResponse struct {
 }
 
 type DataResponse struct {
-	Data []types.SupplierDTO `json:"data"`
+	Data []types.SupplierDAO `json:"data"`
 }
