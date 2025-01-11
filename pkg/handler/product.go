@@ -12,7 +12,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) createProduct(c *gin.Context) {
+// CreateProduct godoc
+// @Summary Create Product
+// @Description Create a new product with the provided data
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param input body types.Product true "Product Info"
+// @Success 201 {object} map[string]interface{} "id":int "Successful response with product ID"
+// @Failure 400 {object} response.ErrorResponse "invalid request params"
+// @Failure 500 {object} response.ErrorResponse "internal server error"
+// @Router /api/v1/product [post]
+
+func (h *Handler) CreateProduct(c *gin.Context) {
 	var product types.Product
 
 	if err := c.BindJSON(&product); err != nil {
@@ -31,7 +43,20 @@ func (h *Handler) createProduct(c *gin.Context) {
 	})
 }
 
-func (h *Handler) updateProduct(c *gin.Context) {
+// UpdateProduct godoc
+// @Summary Update Product
+// @Description Update product quantity
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Product ID"
+// @Param input body types.ProductUpdate true "Product update info"
+// @Success 200 {object} response.StatusResponse "status": "ok" "Successful response"
+// @Failure 400 {object} response.ErrorResponse "invalid request params"
+// @Failure 500 {object} response.ErrorResponse "internal server error"
+// @Router /api/v1/product/{id} [patch]
+
+func (h *Handler) UpdateProduct(c *gin.Context) {
 	var productU types.ProductUpdate
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -41,7 +66,7 @@ func (h *Handler) updateProduct(c *gin.Context) {
 	}
 	err = c.BindJSON(&productU)
 	if err != nil {
-		NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")
 		return
 	}
 
@@ -56,7 +81,20 @@ func (h *Handler) updateProduct(c *gin.Context) {
 	})
 }
 
-func (h *Handler) getProductByID(c *gin.Context) {
+// GetProductByID godoc
+// @Summary Get Product by ID
+// @Description This endpoint returns product and image as a multipart/mixed response. The response includes a JSON part with product and binary parts for image.
+// @Tags product
+// @Accept  json
+// @Produce  multipart/mixed
+// @Param id path int true "Product ID"
+// @Success 200 {object} Response{Products=types.ProductDAO, Images=types.Image} "multipart/mixed json-data Product with corresponding binary Image"
+// @Failure 400 {object} response.ErrorResponse "invalid request params"
+// @Failure 404 {object} response.ErrorResponse "Not Found"
+// @Failure 500 {object} response.ErrorResponse "internal server error"
+// @Router /api/v1/product/{id} [get]
+
+func (h *Handler) GetProductByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")
@@ -64,7 +102,7 @@ func (h *Handler) getProductByID(c *gin.Context) {
 
 	product, image, err := h.services.Product.GetByID(id)
 	if err != nil {
-		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		NewErrorResponse(c, http.StatusNotFound, err.Error())
 		return
 	}
 
@@ -106,7 +144,21 @@ func (h *Handler) getProductByID(c *gin.Context) {
 	c.Data(http.StatusOK, "multipart/mixed", buffer.Bytes())
 }
 
-func (h *Handler) getAllProducts(c *gin.Context) {
+// GetAllProducts godoc
+// @Summary Get All products
+// @Description This endpoint returns products and images as a multipart/mixed response. The response includes a JSON part with products and binary parts for images.
+// @Tags product
+// @Accept  json
+// @Produce  multipart/mixed
+// @Param limit query int false "Limit"
+// @Param offset query int false "Offset"
+// @Success 200 {object} Response{Products=[]types.ProductDAO, Images=[]types.Image} "Multipart/mixed array of json-data Products with corresponding binary part Images"
+// @Failure 400 {object} response.ErrorResponse "invalid request params"
+// @Failure 404 {object} response.ErrorResponse "Not Found"
+// @Failure 500 {object} response.ErrorResponse "internal server error"
+// @Router /api/v1/product [get]
+
+func (h *Handler) GetAllProducts(c *gin.Context) {
 
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
@@ -122,7 +174,7 @@ func (h *Handler) getAllProducts(c *gin.Context) {
 
 	products, images, err := h.services.Product.GetAll(offset, limit)
 	if err != nil {
-		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		NewErrorResponse(c, http.StatusNotFound, err.Error())
 		return
 	}
 
@@ -171,7 +223,19 @@ func (h *Handler) getAllProducts(c *gin.Context) {
 	c.Data(http.StatusOK, "multipart/mixed", buffer.Bytes())
 }
 
-func (h *Handler) deleteProductByID(c *gin.Context) {
+// DeleteProductByID godoc
+// @Summary Delete Product
+// @Description Delete product by ID
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Product ID"
+// @Success 200 {object} response.StatusResponse "status": "ok" "Successful response"
+// @Failure 400 {object} response.ErrorResponse "invalid request params"
+// @Failure 500 {object} response.ErrorResponse "internal server error"
+// @Router /api/v1/product/{id} [delete]
+
+func (h *Handler) DeleteProductByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		NewErrorResponse(c, http.StatusBadRequest, "invalid request params")

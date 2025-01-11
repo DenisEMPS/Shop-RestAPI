@@ -63,8 +63,17 @@ func (c ClientPostgres) Find(name string, surname string) ([]types.ClientDAO, er
 func (c ClientPostgres) GetAll(limit int, offset int) ([]types.ClientDAO, error) {
 	var output []types.ClientDAO
 
-	query := fmt.Sprintf("SELECT name, surname, birthday, gender, registration_date, country, city, street FROM %s JOIN %s USING(adress_id) OFFSET $1 LIMIT $2", clientTable, adressTable)
-	err := c.db.Select(&output, query, offset, limit)
+	query := fmt.Sprintf("SELECT name, surname, birthday, gender, registration_date, country, city, street FROM %s JOIN %s USING(adress_id)", clientTable, adressTable)
+
+	if limit > 0 {
+		query += fmt.Sprintf(" LIMIT %d", limit)
+	}
+
+	if offset > 0 {
+		query += fmt.Sprintf(" OFFSET %d", offset)
+	}
+
+	err := c.db.Select(&output, query)
 	if err != nil {
 		return nil, err
 	}

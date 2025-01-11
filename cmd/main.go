@@ -1,17 +1,27 @@
 package main
 
 import (
+	"context"
 	"os"
+	"os/signal"
 	project "school21_project1"
 	"school21_project1/pkg/handler"
 	"school21_project1/pkg/repository"
 	"school21_project1/pkg/service"
+	"syscall"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
+
+// @title Online-Shop API
+// @version 1.0
+// @description API server for online-shop Application
+
+// @host localhost:8000
+// @BasePath /api/v1
 
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
@@ -38,8 +48,25 @@ func main() {
 	handler := handler.NewHandler(service)
 
 	server := new(project.Server)
-	if err := server.Run(viper.GetString("port"), handler.InitRoutes()); err != nil {
-		logrus.Fatalf("failed to run server: %s", err.Error())
+
+	go func() {
+		if err := server.Run(viper.GetString("port"), handler.InitRoutes()); err != nil {
+			logrus.Fatalf("failed to run server: %s", err.Error())
+		}
+	}()
+
+	logrus.Print("App started")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	if err := server.Shutdown(context.Background()); err != nil {
+		logrus.Printf("error ocured on server shutting down: %s", err.Error())
+	}
+
+	if err := db.Close(); err != nil {
+		logrus.Printf("error ocured on db connection close: %s", err.Error())
 	}
 }
 

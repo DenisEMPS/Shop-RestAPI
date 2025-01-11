@@ -72,9 +72,17 @@ func (p ProductPostgres) GetAll(offset int, limit int) ([]types.ProductDAO, []ty
 	var outputImages []types.Image
 
 	query := fmt.Sprintf(`SELECT p.name, p.category, p.price, p.available_stock, p.last_update_date, supplier_name, a.country, a.city, a.street, supplier_phone_number, image
-	FROM %s p JOIN %s s USING(supplier_id) JOIN %s a USING(adress_id) JOIN %s USING(image_id) OFFSET $1 LIMIT $2`, productTable, supplierTable, adressTable, imageTable)
+	FROM %s p JOIN %s s USING(supplier_id) JOIN %s a USING(adress_id) JOIN %s USING(image_id)`, productTable, supplierTable, adressTable, imageTable)
 
-	raws, err := p.db.Query(query, offset, limit)
+	if limit > 0 {
+		query += fmt.Sprintf(" LIMIT %d", limit)
+	}
+
+	if offset > 0 {
+		query += fmt.Sprintf(" OFFSET %d", offset)
+	}
+
+	raws, err := p.db.Query(query)
 	if err != nil {
 		return nil, nil, err
 	}

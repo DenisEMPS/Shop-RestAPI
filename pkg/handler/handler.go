@@ -3,7 +3,11 @@ package handler
 import (
 	"school21_project1/pkg/service"
 
+	_ "C:/Denis/go/School21_PR1/Shop-RestAPI/docs"
+
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Handler struct {
@@ -17,41 +21,45 @@ func NewHandler(services *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
-	client := router.Group("/client")
-	{
-		client.POST("/", h.createClient)
-		client.DELETE("/:id", h.deleteClient)
-		client.GET("/find/", h.findClientByName)
-		client.GET("/", h.getAllClients)
-		client.PATCH("/:id", h.updateClientEmail)
-	}
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	product := router.Group("/product")
+	api := router.Group("/api/v1/")
 	{
-		product.POST("/", h.createProduct)
-		product.PATCH("/:id", h.updateProduct)
-		product.GET("/", h.getAllProducts)
-		product.GET("/:id", h.getProductByID)
-		product.DELETE("/:id", h.deleteProductByID)
-	}
+		client := api.Group("/client")
+		{
+			client.POST("/", h.CreateClient)
+			client.DELETE("/:id", h.DeleteClientByID)
+			client.GET("/find/", h.FindClientByData)
+			client.GET("/", h.GetAllClients)
+			client.PATCH("/:id", h.UpdateClient)
+		}
 
-	supplier := router.Group("/supplier")
-	{
-		supplier.POST("/", h.createSupplier)
-		supplier.PATCH("/:id", h.updateSupplier)
-		supplier.DELETE("/:id", h.deleteSupplierByID)
-		supplier.GET("/", h.getAllSuppliers)
-		supplier.GET("/:id", h.getSupplierByID)
-	}
+		product := api.Group("/product")
+		{
+			product.POST("/", h.CreateProduct)
+			product.PATCH("/:id", h.UpdateClient)
+			product.GET("/", h.GetAllProducts)
+			product.GET("/:id", h.GetProductByID)
+			product.DELETE("/:id", h.DeleteProductByID)
+		}
 
-	image := router.Group("/image")
-	{
-		image.POST("/", h.createImageProduct)
-		image.PATCH("/:id", h.updateImageByID)
-		image.DELETE("/:id", h.deleteImageByID)
-		image.GET("/product_id/:id", h.getImageByProductID)
-		image.GET("/image_id/:id", h.getImageByID)
-	}
+		supplier := api.Group("/supplier")
+		{
+			supplier.POST("/", h.CreateSupplier)
+			supplier.PATCH("/:id", h.UpdateSupplier)
+			supplier.DELETE("/:id", h.DeleteSupplierByID)
+			supplier.GET("/", h.GetAllSuppliers)
+			supplier.GET("/:id", h.GetSupplierByID)
+		}
 
+		image := api.Group("/image")
+		{
+			image.POST("/", h.CreateImageProduct)
+			image.PATCH("/:id", h.UpdateImageByID)
+			image.DELETE("/:id", h.DeleteImageByID)
+			image.GET("/product_id/:id", h.GetImageByProductID)
+			image.GET("/image_id/:id", h.GetImageByID)
+		}
+	}
 	return router
 }
