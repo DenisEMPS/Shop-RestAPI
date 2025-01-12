@@ -1,9 +1,775 @@
 basePath: /api/v1
+definitions:
+  handler.DataResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/types.SupplierDAO'
+        type: array
+    type: object
+  handler.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  handler.StatusResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  types.AdressDTO:
+    properties:
+      city:
+        type: string
+      country:
+        type: string
+      street:
+        type: string
+    type: object
+  types.ClientDAO:
+    properties:
+      birthday:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      gender:
+        type: boolean
+      name:
+        type: string
+      registration_date:
+        type: string
+      street:
+        type: string
+      surname:
+        type: string
+    type: object
+  types.CreateClient:
+    properties:
+      birthday:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      gender:
+        type: boolean
+      name:
+        type: string
+      street:
+        type: string
+      surname:
+        type: string
+    required:
+    - birthday
+    - city
+    - country
+    - gender
+    - name
+    - street
+    - surname
+    type: object
+  types.CreateImageProduct:
+    properties:
+      image:
+        items:
+          type: integer
+        type: array
+      product_id:
+        type: integer
+    type: object
+  types.CreateSupplier:
+    properties:
+      city:
+        type: string
+      country:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      street:
+        type: string
+    required:
+    - city
+    - country
+    - name
+    - phone_number
+    - street
+    type: object
+  types.Image:
+    properties:
+      image:
+        items:
+          type: integer
+        type: array
+    type: object
+  types.Product:
+    properties:
+      available_stock:
+        type: integer
+      category:
+        type: string
+      image:
+        items:
+          type: integer
+        type: array
+      last_update_date:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      supplier_id:
+        type: integer
+    type: object
+  types.ProductUpdate:
+    properties:
+      available_stock:
+        type: integer
+    required:
+    - available_stock
+    type: object
+  types.SupplierDAO:
+    properties:
+      city:
+        type: string
+      country:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      street:
+        type: string
+    type: object
 host: localhost:8000
 info:
   contact: {}
   description: API server for online-shop Application
   title: Online-Shop API
   version: "1.0"
-paths: {}
+paths:
+  /client:
+    get:
+      consumes:
+      - application/json
+      description: Get all clients with pagination parameters
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "Successful\tresponse\twith\tclients"
+          schema:
+            items:
+              $ref: '#/definitions/types.ClientDAO'
+            type: array
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get All Clients
+      tags:
+      - client
+    post:
+      consumes:
+      - application/json
+      description: Create a new client with the provided information
+      parameters:
+      - description: Client Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateClient'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: "id\":int\t\"Successful response with client ID"
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create Client
+      tags:
+      - client
+  /client/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete client by ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "status\":\t\"ok\"\t\"Successful response"
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete Client by ID
+      tags:
+      - client
+    patch:
+      consumes:
+      - application/json
+      description: Update client adress information
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Adress info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.AdressDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "status\":\t\"ok\"\t\"Successful response"
+          schema:
+            $ref: '#/definitions/handler.StatusResponse'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update Client adress
+      tags:
+      - client
+  /client/find/:
+    get:
+      consumes:
+      - application/json
+      description: Find a client by name and surname
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Surname
+        in: query
+        name: surname
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response with client
+          schema:
+            $ref: '#/definitions/types.ClientDAO'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Find Client by data
+      tags:
+      - client
+  /image:
+    post:
+      consumes:
+      - application/json
+      description: Create a new image for product
+      parameters:
+      - description: Image and Product info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateImageProduct'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: "uuid\":string\t\"Successful response with image ID"
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create Product Image
+      tags:
+      - image
+  /image/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete image by image ID/uuid
+      parameters:
+      - description: Image ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "status\":\t\"ok\"\t\"Successful response"
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete Image by ID
+      tags:
+      - image
+    patch:
+      consumes:
+      - application/json
+      description: Update image by image id/uuid
+      parameters:
+      - description: Image ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Image bytes
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.Image'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "status\":\t\"ok\"\t\"Successful response"
+          schema:
+            $ref: '#/definitions/handler.StatusResponse'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update Image
+      tags:
+      - image
+  /image/image_id/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get image by image ID/uuid
+      parameters:
+      - description: Image_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response with image
+          schema:
+            $ref: '#/definitions/types.Image'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get Image by ID
+      tags:
+      - image
+  /image/product_id/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get image by product ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response with image
+          schema:
+            $ref: '#/definitions/types.Image'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get Image by Product ID
+      tags:
+      - image
+  /product:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint returns products and images as a multipart/mixed
+        response. The response includes a JSON part with products and binary parts
+        for images.
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - multipart/mixed
+      responses:
+        "200":
+          description: Multipart/mixed array of json-data Products with corresponding
+            binary part Images
+          schema:
+            type: file
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get All products
+      tags:
+      - product
+    post:
+      consumes:
+      - application/json
+      description: Create a new product with the provided data
+      parameters:
+      - description: Product Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: "id\":int\t\"Successful response with product ID"
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create Product
+      tags:
+      - product
+  /product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "status\":\t\"ok\"\t\"Successful response"
+          schema:
+            $ref: '#/definitions/handler.StatusResponse'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete Product
+      tags:
+      - product
+    get:
+      consumes:
+      - application/json
+      description: This endpoint returns product and image as a multipart/mixed response.
+        The response includes a JSON part with product and binary parts for image.
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - multipart/mixed
+      responses:
+        "200":
+          description: Multipart/mixed - json-data of Product with corresponding binary
+            part Image
+          schema:
+            type: file
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get Product by ID
+      tags:
+      - product
+    patch:
+      consumes:
+      - application/json
+      description: Update product quantity
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Product update info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.ProductUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "status\":\t\"ok\"\t\"Successful response"
+          schema:
+            $ref: '#/definitions/handler.StatusResponse'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update Product
+      tags:
+      - product
+  /supplier:
+    get:
+      consumes:
+      - application/json
+      description: Get all suppliers with follow up information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "data\":\t[]types.SupplierDAO\t\"Successful response with suppliers"
+          schema:
+            $ref: '#/definitions/handler.DataResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get All Suppliers
+      tags:
+      - supplier
+    post:
+      consumes:
+      - application/json
+      description: Create a new supplier with the provided information
+      parameters:
+      - description: Supplier Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateSupplier'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: "id\":int\t\"Successful response with supplier ID"
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create Supplier
+      tags:
+      - supplier
+  /supplier/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete supplier by supplier ID
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "status\":\t\"ok\"\t\"Successful response"
+          schema:
+            $ref: '#/definitions/handler.StatusResponse'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete Supplier by ID
+      tags:
+      - supplier
+    get:
+      consumes:
+      - application/json
+      description: Get supplier by ID with follow up information
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response with supplier
+          schema:
+            $ref: '#/definitions/types.SupplierDAO'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get Supplier by ID
+      tags:
+      - supplier
+    patch:
+      consumes:
+      - application/json
+      description: Update supplier adress information
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Adress info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.AdressDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "status\":\t\"ok\"\t\"Successful response"
+          schema:
+            $ref: '#/definitions/handler.StatusResponse'
+        "400":
+          description: invalid request params
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update Supplier Adress
+      tags:
+      - supplier
 swagger: "2.0"

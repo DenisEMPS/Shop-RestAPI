@@ -9,17 +9,17 @@ import (
 )
 
 // CreateSupplier godoc
-// @Summary Create Supplier
-// @Description Create a new supplier with the provided information
-// @Tags supplier
-// @Accept  json
-// @Produce  json
-// @Param input body types.CreateSupplier true "Supplier Info"
-// @Success 201 {object} map[string]interface{} "id":int "Successful response with supplier ID"
-// @Failure 400 {object} response.ErrorResponse "invalid request params"
-// @Failure 500 {object} response.ErrorResponse "internal server error"
-// @Router /api/v1/supplier [post]
-
+//
+//	@Summary		Create Supplier
+//	@Description	Create a new supplier with the provided information
+//	@Tags			supplier
+//	@Accept			json
+//	@Produce		json
+//	@Param			input	body		types.CreateSupplier	true		"Supplier Info"
+//	@Success		201		{object}	map[string]interface{}	"id":int	"Successful response with supplier ID"
+//	@Failure		400		{object}	ErrorResponse	"invalid request params"
+//	@Failure		500		{object}	ErrorResponse	"internal server error"
+//	@Router			/supplier [post]
 func (h *Handler) CreateSupplier(c *gin.Context) {
 	var supplier types.CreateSupplier
 
@@ -41,18 +41,18 @@ func (h *Handler) CreateSupplier(c *gin.Context) {
 }
 
 // UpdateSupplier godoc
-// @Summary Update Supplier Adress
-// @Description Update supplier adress information
-// @Tags supplier
-// @Accept  json
-// @Produce  json
-// @Param id path int true "Supplier ID"
-// @Param input body types.AdressDTO true "Adress info"
-// @Success 200 {object} response.StatusResponse "status": "ok" "Successful response"
-// @Failure 400 {object} response.ErrorResponse "invalid request params"
-// @Failure 500 {object} response.ErrorResponse "internal server error"
-// @Router /api/v1/supplier/{id} [patch]
-
+//
+//	@Summary		Update Supplier Adress
+//	@Description	Update supplier adress information
+//	@Tags			supplier
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int						true		"Supplier ID"
+//	@Param			input	body		types.AdressDTO			true		"Adress info"
+//	@Success		200		{object}	StatusResponse	"status":	"ok"	"Successful response"
+//	@Failure		400		{object}	ErrorResponse	"invalid request params"
+//	@Failure		500		{object}	ErrorResponse	"internal server error"
+//	@Router			/supplier/{id} [patch]
 func (h *Handler) UpdateSupplier(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -79,17 +79,17 @@ func (h *Handler) UpdateSupplier(c *gin.Context) {
 }
 
 // DeleteSupplierByID godoc
-// @Summary Delete Supplier by ID
-// @Description Delete supplier by supplier ID
-// @Tags supplier
-// @Accept  json
-// @Produce  json
-// @Param id path int true "Supplier ID"
-// @Success 200 {object} response.StatusResponse "status": "ok" "Successful response"
-// @Failure 400 {object} response.ErrorResponse "invalid request params"
-// @Failure 500 {object} response.ErrorResponse "internal server error"
-// @Router /api/v1/supplier/{id} [delete]
-
+//
+//	@Summary		Delete Supplier by ID
+//	@Description	Delete supplier by supplier ID
+//	@Tags			supplier
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int						true		"Supplier ID"
+//	@Success		200	{object}	StatusResponse	"status":	"ok"	"Successful response"
+//	@Failure		400	{object}	ErrorResponse	"invalid request params"
+//	@Failure		500	{object}	ErrorResponse	"internal server error"
+//	@Router			/supplier/{id} [delete]
 func (h *Handler) DeleteSupplierByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -109,15 +109,15 @@ func (h *Handler) DeleteSupplierByID(c *gin.Context) {
 }
 
 // GetAllSuppliers godoc
-// @Summary Get All Suppliers
-// @Description Get all suppliers with follow up information
-// @Tags supplier
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} response.DataResponse "data": []types.SupplierDAO "Successful response with suppliers"
-// @Failure 500 {object} response.ErrorResponse "internal server error"
-// @Router /api/v1/supplier [get]
-
+//
+//	@Summary		Get All Suppliers
+//	@Description	Get all suppliers with follow up information
+//	@Tags			supplier
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	DataResponse	"data":	[]types.SupplierDAO	"Successful response with suppliers"
+//	@Failure		500	{object}	ErrorResponse	"internal server error"
+//	@Router			/supplier [get]
 func (h *Handler) GetAllSuppliers(c *gin.Context) {
 	supplier, err := h.services.Supplier.GetAll()
 	if err != nil {
@@ -131,17 +131,17 @@ func (h *Handler) GetAllSuppliers(c *gin.Context) {
 }
 
 // GetSupplierByID godoc
-// @Summary Get Supplier by ID
-// @Description Get supplier by ID with follow up information
-// @Tags supplier
-// @Accept  json
-// @Produce  json
-// @Param id path int true "Supplier ID"
-// @Success 200 {object} types.SupplierDAO "Successful response with supplier"
-// @Failure 400 {object} response.ErrorResponse "invalid request params"
-// @Failure 404 {object} response.ErrorResponse "Not found"
-// @Router /api/v1/supplier/{id} [get]
-
+//
+//	@Summary		Get Supplier by ID
+//	@Description	Get supplier by ID with follow up information
+//	@Tags			supplier
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int						true	"Supplier ID"
+//	@Success		200	{object}	types.SupplierDAO		"Successful response with supplier"
+//	@Failure		400	{object}	ErrorResponse	"invalid request params"
+//	@Failure		404	{object}	ErrorResponse	"Not found"
+//	@Router			/supplier/{id} [get]
 func (h *Handler) GetSupplierByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -151,7 +151,7 @@ func (h *Handler) GetSupplierByID(c *gin.Context) {
 
 	supplier, err := h.services.Supplier.GetByID(id)
 	if err != nil {
-		NewErrorResponse(c, http.StatusNotFound, err.Error())
+		NewErrorResponse(c, http.StatusNotFound, "Not found")
 		return
 	}
 

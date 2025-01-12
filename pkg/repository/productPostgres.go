@@ -64,6 +64,11 @@ func (p ProductPostgres) GetByID(id int) (types.ProductDAO, types.Image, error) 
 			return outputProduct, outputImage, err
 		}
 	}
+
+	if outputProduct.Name == "" {
+		return outputProduct, outputImage, fmt.Errorf("product not found")
+	}
+
 	return outputProduct, outputImage, err
 }
 

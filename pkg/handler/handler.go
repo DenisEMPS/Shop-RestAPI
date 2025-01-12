@@ -3,7 +3,7 @@ package handler
 import (
 	"school21_project1/pkg/service"
 
-	_ "C:/Denis/go/School21_PR1/Shop-RestAPI/docs"
+	_ "school21_project1/docs"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

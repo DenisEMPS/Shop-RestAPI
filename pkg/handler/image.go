@@ -9,17 +9,17 @@ import (
 )
 
 // CreateImageProduct godoc
-// @Summary Create Product Image
-// @Description Create a new image for product
-// @Tags image
-// @Accept  json
-// @Produce  json
-// @Param input body types.CreateImageProduct true "Image and Product info"
-// @Success 201 {object} map[string]interface{} "uuid":string "Successful response with image ID"
-// @Failure 400 {object} response.ErrorResponse "invalid request params"
-// @Failure 500 {object} response.ErrorResponse "internal server error"
-// @Router /api/v1/image [post]
-
+//
+//	@Summary		Create Product Image
+//	@Description	Create a new image for product
+//	@Tags			image
+//	@Accept			json
+//	@Produce		json
+//	@Param			input	body		types.CreateImageProduct	true			"Image and Product info"
+//	@Success		201		{object}	map[string]interface{}		"uuid":string	"Successful response with image ID"
+//	@Failure		400		{object}	ErrorResponse		"invalid request params"
+//	@Failure		500		{object}	ErrorResponse		"internal server error"
+//	@Router			/image [post]
 func (h *Handler) CreateImageProduct(c *gin.Context) {
 	var image types.CreateImageProduct
 
@@ -40,18 +40,18 @@ func (h *Handler) CreateImageProduct(c *gin.Context) {
 }
 
 // UpdateImageByID godoc
-// @Summary Update Image
-// @Description Update image by image id/uuid
-// @Tags image
-// @Accept  json
-// @Produce  json
-// @Param id path string true "Image ID"
-// @Param input body types.Image true "Image bytes"
-// @Success 200 {object} response.StatusResponse "status": "ok" "Successful response"
-// @Failure 400 {object} response.ErrorResponse "invalid request params"
-// @Failure 500 {object} response.ErrorResponse "internal server error"
-// @Router /api/v1/image/{id} [patch]
-
+//
+//	@Summary		Update Image
+//	@Description	Update image by image id/uuid
+//	@Tags			image
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string					true		"Image ID"
+//	@Param			input	body		types.Image				true		"Image bytes"
+//	@Success		200		{object}	StatusResponse	"status":	"ok"	"Successful response"
+//	@Failure		400		{object}	ErrorResponse	"invalid request params"
+//	@Failure		500		{object}	ErrorResponse	"internal server error"
+//	@Router			/image/{id} [patch]
 func (h *Handler) UpdateImageByID(c *gin.Context) {
 	uuid := c.Param("id")
 
@@ -85,17 +85,17 @@ func (h *Handler) UpdateImageByID(c *gin.Context) {
 }
 
 // DeleteImageByID godoc
-// @Summary Delete Image by ID
-// @Description Delete image by image ID/uuid
-// @Tags image
-// @Accept  json
-// @Produce  json
-// @Param id path string true "Image ID"
-// @Success 200 {object} map[string]interface{} "status": "ok" "Successful response"
-// @Failure 400 {object} response.ErrorResponse "invalid request params"
-// @Failure 500 {object} response.ErrorResponse "internal server error"
-// @Router /api/v1/image/{id} [delete]
-
+//
+//	@Summary		Delete Image by ID
+//	@Description	Delete image by image ID/uuid
+//	@Tags			image
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string					true		"Image ID"
+//	@Success		200	{object}	map[string]interface{}	"status":	"ok"	"Successful response"
+//	@Failure		400	{object}	ErrorResponse	"invalid request params"
+//	@Failure		500	{object}	ErrorResponse	"internal server error"
+//	@Router			/image/{id} [delete]
 func (h *Handler) DeleteImageByID(c *gin.Context) {
 	uuid := c.Param("id")
 
@@ -116,17 +116,17 @@ func (h *Handler) DeleteImageByID(c *gin.Context) {
 }
 
 // GetImageByProductID godoc
-// @Summary Get Image by Product ID
-// @Description Get image by product ID
-// @Tags image
-// @Accept  json
-// @Produce  json
-// @Param id path int true "Product ID"
-// @Success 200 {object} types.Image.Image "Successful response with image"
-// @Failure 400 {object} response.ErrorResponse "invalid request params"
-// @Failure 500 {object} response.ErrorResponse "internal server error"
-// @Router /api/v1/image/product_id/{id} [get]
-
+//
+//	@Summary		Get Image by Product ID
+//	@Description	Get image by product ID
+//	@Tags			image
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int						true	"Product ID"
+//	@Success		200	{object}	types.Image.Image		"Successful response with image"
+//	@Failure		400	{object}	ErrorResponse	"invalid request params"
+//	@Failure		500	{object}	ErrorResponse	"internal server error"
+//	@Router			/image/product_id/{id} [get]
 func (h *Handler) GetImageByProductID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -145,17 +145,17 @@ func (h *Handler) GetImageByProductID(c *gin.Context) {
 }
 
 // GetImageByID godoc
-// @Summary Get Image by ID
-// @Description Get image by image ID/uuid
-// @Tags image
-// @Accept  json
-// @Produce  json
-// @Param id path string true "Image_id"
-// @Success 200 {object} types.Image.Image "Successful response with image"
-// @Failure 400 {object} response.ErrorResponse "invalid request params"
-// @Failure 500 {object} response.ErrorResponse "internal server error"
-// @Router /api/v1/image/image_id/{id} [get]
-
+//
+//	@Summary		Get Image by ID
+//	@Description	Get image by image ID/uuid
+//	@Tags			image
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string					true	"Image_id"
+//	@Success		200	{object}	types.Image.Image		"Successful response with image"
+//	@Failure		400	{object}	ErrorResponse	"invalid request params"
+//	@Failure		500	{object}	ErrorResponse	"internal server error"
+//	@Router			/image/image_id/{id} [get]
 func (h *Handler) GetImageByID(c *gin.Context) {
 	id := c.Param("id")
 

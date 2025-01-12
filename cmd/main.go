@@ -16,12 +16,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-// @title Online-Shop API
-// @version 1.0
-// @description API server for online-shop Application
+//	@title			Online-Shop API
+//	@version		1.0
+//	@description	API server for online-shop Application
 
-// @host localhost:8000
-// @BasePath /api/v1
+//	@host		localhost:8000
+//	@BasePath	/api/v1
 
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
