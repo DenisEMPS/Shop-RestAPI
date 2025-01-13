@@ -244,7 +244,7 @@ func (h *Handler) DeleteProductByID(c *gin.Context) {
 	err = h.services.Product.Delete(id)
 
 	if err != nil {
-		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		NewErrorResponse(c, http.StatusNotFound, "product was not find")
 		return
 	}
 

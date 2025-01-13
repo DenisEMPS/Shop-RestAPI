@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"school21_project1/pkg/repository"
 	"school21_project1/types"
 	"testing"
@@ -51,6 +52,50 @@ func TestClientPostgres_Create(t *testing.T) {
 				mock.ExpectCommit()
 			},
 			id: 1,
+		},
+		{
+			name: "Wrong field in first INSERT",
+			client: types.CreateClient{
+				Name:     "Evgeniy",
+				Surname:  "Isaev",
+				Birthday: "1985-11-11",
+				Gender:   true,
+				Country:  "USA",
+				City:     "Florida",
+			},
+			mockBehavior: func(client types.CreateClient, id int) {
+				mock.ExpectBegin()
+
+				rows := sqlxmock.NewRows([]string{"adress_id"}).AddRow(id)
+				mock.ExpectQuery("INSERT INTO adress").WithArgs(client.Street, client.Country, client.City).WillReturnRows(rows)
+
+				mock.ExpectRollback()
+			},
+			id:      1,
+			wantErr: true,
+		},
+		{
+			name: "Query return error in second INSERT",
+			client: types.CreateClient{
+				Name:     "Evgeniy",
+				Surname:  "Isaev",
+				Birthday: "1985-11-11",
+				Gender:   true,
+				Country:  "USA",
+				City:     "Florida",
+			},
+			mockBehavior: func(client types.CreateClient, id int) {
+				mock.ExpectBegin()
+
+				rows := sqlxmock.NewRows([]string{"adress_id"}).AddRow(id)
+				mock.ExpectQuery("INSERT INTO adress").WithArgs(client.Country, client.City, client.Street).WillReturnRows(rows)
+
+				mock.ExpectQuery("INSERT INTO client").WithArgs(client.Surname, client.Birthday, client.Birthday, client.Gender, id).WillReturnError(fmt.Errorf("error"))
+
+				mock.ExpectRollback()
+			},
+			id:      1,
+			wantErr: true,
 		},
 	}
 

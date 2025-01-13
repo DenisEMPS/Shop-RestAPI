@@ -113,6 +113,7 @@ func (p ProductPostgres) GetAll(offset int, limit int) ([]types.ProductDAO, []ty
 func (p ProductPostgres) Delete(id int) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE product_id = $1", productTable)
 	_, err := p.db.Exec(query, id)
+
 	return err
 }
 
