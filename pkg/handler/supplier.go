@@ -86,7 +86,7 @@ func (h *Handler) UpdateSupplier(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		int						true		"Supplier ID"
-//	@Success		200	{object}	StatusResponse	"status":	"ok"	"Successful response"
+//	@Success		200	{object}	StatusResponse	"status":"ok"	"Successful response"
 //	@Failure		400	{object}	ErrorResponse	"invalid request params"
 //	@Failure		500	{object}	ErrorResponse	"internal server error"
 //	@Router			/supplier/{id} [delete]

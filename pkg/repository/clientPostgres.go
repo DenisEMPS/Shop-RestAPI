@@ -57,6 +57,11 @@ func (c ClientPostgres) Find(name string, surname string) ([]types.ClientDAO, er
 	if err != nil {
 		return nil, err
 	}
+
+	if output == nil {
+		return nil, fmt.Errorf("no clients was find")
+	}
+
 	return output, nil
 }
 
@@ -77,6 +82,11 @@ func (c ClientPostgres) GetAll(limit int, offset int) ([]types.ClientDAO, error)
 	if err != nil {
 		return nil, err
 	}
+
+	if output == nil {
+		return nil, fmt.Errorf("no clients was find")
+	}
+
 	return output, nil
 }
 

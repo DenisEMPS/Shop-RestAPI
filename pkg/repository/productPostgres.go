@@ -103,6 +103,10 @@ func (p ProductPostgres) GetAll(offset int, limit int) ([]types.ProductDAO, []ty
 		outputImages = append(outputImages, outputI)
 	}
 
+	if outputProducts == nil {
+		return nil, nil, fmt.Errorf("no products was find")
+	}
+
 	return outputProducts, outputImages, nil
 }
 

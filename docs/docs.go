@@ -569,7 +569,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "id\":int\t\"Successful response with product ID",
+                        "description": "id\" :int\t\"Successful response with product ID",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -873,7 +873,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "status\":\t\"ok\"\t\"Successful response",
+                        "description": "status\":\"ok\"\t\"Successful response",
                         "schema": {
                             "$ref": "#/definitions/handler.StatusResponse"
                         }
@@ -1105,6 +1105,14 @@ const docTemplate = `{
         },
         "types.Product": {
             "type": "object",
+            "required": [
+                "available_stock",
+                "category",
+                "last_update_date",
+                "name",
+                "price",
+                "supplier_id"
+            ],
             "properties": {
                 "available_stock": {
                     "type": "integer"

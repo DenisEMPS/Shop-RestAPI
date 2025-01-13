@@ -123,6 +123,13 @@ definitions:
         type: number
       supplier_id:
         type: integer
+    required:
+    - available_stock
+    - category
+    - last_update_date
+    - name
+    - price
+    - supplier_id
     type: object
   types.ProductUpdate:
     properties:
@@ -520,7 +527,7 @@ paths:
       - application/json
       responses:
         "201":
-          description: "id\":int\t\"Successful response with product ID"
+          description: "id\" :int\t\"Successful response with product ID"
           schema:
             additionalProperties: true
             type: object
@@ -696,7 +703,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: "status\":\t\"ok\"\t\"Successful response"
+          description: "status\":\"ok\"\t\"Successful response"
           schema:
             $ref: '#/definitions/handler.StatusResponse'
         "400":

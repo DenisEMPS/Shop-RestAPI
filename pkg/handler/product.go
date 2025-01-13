@@ -20,7 +20,7 @@ import (
 //	@Accept			json
 //	@Produce		json
 //	@Param			input	body		types.Product			true		"Product Info"
-//	@Success		201		{object}	map[string]interface{}	"id":int	"Successful response with product ID"
+//	@Success		201		{object}	map[string]interface{}	"id" :int	"Successful response with product ID"
 //	@Failure		400		{object}	ErrorResponse	"invalid request params"
 //	@Failure		500		{object}	ErrorResponse	"internal server error"
 //	@Router			/product [post]
