@@ -151,7 +151,7 @@ func (h *Handler) GetSupplierByID(c *gin.Context) {
 
 	supplier, err := h.services.Supplier.GetByID(id)
 	if err != nil {
-		NewErrorResponse(c, http.StatusNotFound, "Not found")
+		NewErrorResponse(c, http.StatusNotFound, "supplier not found")
 		return
 	}
 

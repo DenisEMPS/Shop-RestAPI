@@ -30,7 +30,7 @@ func (h *Handler) CreateClient(c *gin.Context) {
 
 	id, err := h.services.Client.Create(client)
 	if err != nil {
-		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		NewErrorResponse(c, http.StatusInternalServerError, "internal server error")
 		return
 	}
 

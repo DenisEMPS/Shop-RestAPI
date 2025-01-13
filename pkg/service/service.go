@@ -5,6 +5,8 @@ import (
 	"school21_project1/types"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Client interface {
 	Create(client types.CreateClient) (int, error)
 	Delete(id int) error
