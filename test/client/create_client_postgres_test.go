@@ -65,9 +65,7 @@ func TestClientPostgres_Create(t *testing.T) {
 			},
 			mockBehavior: func(client types.CreateClient, id int) {
 				mock.ExpectBegin()
-
-				rows := sqlxmock.NewRows([]string{"adress_id"}).AddRow(id)
-				mock.ExpectQuery("INSERT INTO adress").WithArgs(client.Street, client.Country, client.City).WillReturnRows(rows)
+				mock.ExpectQuery("INSERT INTO adress").WithArgs(client.Street, client.Country, client.City).WillReturnError(fmt.Errorf("wrong fields"))
 
 				mock.ExpectRollback()
 			},
